@@ -1,3 +1,4 @@
+// schema for user data
 const mongoose = require("mongoose");
 
 const userData = new mongoose.Schema({
