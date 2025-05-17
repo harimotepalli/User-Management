@@ -1,6 +1,6 @@
 const userData = require("../modals/userModal");
 
-// Create - Add a new user
+// Create - To add a new user
 const AddUser = async (req, res) => {
     const { userName, userPassword } = req.body;
     try {
