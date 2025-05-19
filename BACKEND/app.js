@@ -8,6 +8,7 @@ const app = express();
 app.use(bodyparser.json());
 app.use(cors());
 
+require('dotenv').config();
 
 // 1.modal     2.controller   3.router
 
@@ -20,7 +21,7 @@ app.use(cors());
 //FS
 //PATH
 
-const mongoDB_url = "mongodb://localhost:27017/MCA_FSD";
+const mongoDB_url = process.env.MONGODB_URL;
 
 // const mongoDB_url = "mongodb+srv://durgahari012:Hari1432@cluster0.bmneanm.mongodb.net/MCA_FSD?retryWrites=true&w=majority&appName=Cluster0";
 
