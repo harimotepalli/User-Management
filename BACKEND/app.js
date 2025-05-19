@@ -13,6 +13,13 @@ app.use(cors());
 
 // 1.postman   2.thunderclient  --> extension
 
+
+// for img uploading
+// we neeed to install multer
+// it supports all types of files
+//FS
+//PATH
+
 const mongoDB_url = "mongodb://localhost:27017/MCA_FSD";
 
 // const mongoDB_url = "mongodb+srv://durgahari012:Hari1432@cluster0.bmneanm.mongodb.net/MCA_FSD?retryWrites=true&w=majority&appName=Cluster0";

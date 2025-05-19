@@ -7,6 +7,9 @@ const userData = new mongoose.Schema({
     },
     userPassword:{
         type:Number
+    },
+    userImage:{
+        type: String
     }
 });
 
