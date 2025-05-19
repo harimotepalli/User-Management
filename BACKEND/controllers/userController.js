@@ -4,7 +4,14 @@ const userData = require("../modals/userModal");
 const AddUser = async (req, res) => {
     const { userName, userPassword } = req.body;
     try {
-        const mydata = new userData({ userName, userPassword });
+        const imagePath = req.file ? req.file.path : null; // Get the image path from the request
+
+        const mydata = new userData({
+            userName,
+            userPassword,
+            userImage: imagePath // Include the image if present
+        });
+
         await mydata.save();
         res.status(200).json({ message: "User Added Successfully", data: mydata });
     } catch (error) {
@@ -12,6 +19,7 @@ const AddUser = async (req, res) => {
         res.status(500).json({ message: "Error adding user", error: error.message });
     }
 };
+
 
 // Read - Get all users
 const GetUsers = async (req, res) => {
