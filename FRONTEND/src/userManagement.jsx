@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
@@ -11,6 +10,7 @@ const UserManagement = () => {
     userId: "",
     userName: "",
     userPassword: "",
+    userImage: null,
   });
   const [errors, setErrors] = useState({});
   const [showModal, setShowModal] = useState(false);
@@ -36,6 +36,10 @@ const UserManagement = () => {
     setErrors((prev) => ({ ...prev, [id]: "" }));
   };
 
+  const handleFileChange = (e) => {
+    setFormData((prev) => ({ ...prev, userImage: e.target.files[0] }));
+  };
+
   const validateForm = () => {
     const newErrors = {};
     if (!formData.userName.trim()) newErrors.userName = "Username is required";
@@ -51,30 +55,34 @@ const UserManagement = () => {
     }
 
     try {
-      const { userId, userName, userPassword } = formData;
+      const form = new FormData();
+      form.append("userName", formData.userName);
+      form.append("userPassword", formData.userPassword);
+      if (formData.userImage) {
+        form.append("userImage", formData.userImage);
+      }
 
-      const url = userId
-        ? `${apiBase}/update-user/${userId}`
+      const url = formData.userId
+        ? `${apiBase}/update-user/${formData.userId}`
         : `${apiBase}/add-user`;
-      const method = userId ? "PUT" : "POST";
+      const method = formData.userId ? "PUT" : "POST";
 
       const res = await fetch(url, {
         method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userName, userPassword }),
+        body: form,
       });
 
       const data = await res.json();
 
       if (res.ok) {
         toast.success(data.message || "Saved successfully");
-        setFormData({ userId: "", userName: "", userPassword: "" });
+        setFormData({ userId: "", userName: "", userPassword: "", userImage: null });
         fetchUsers();
       } else {
         toast.error(data.message || "Something went wrong");
       }
     } catch (err) {
-      toast.error("Error saving user",err);
+      toast.error("Error saving user.",err);
     }
   };
 
@@ -83,6 +91,7 @@ const UserManagement = () => {
       userId: user._id,
       userName: user.userName,
       userPassword: user.userPassword,
+      userImage: null,
     });
     setErrors({});
   };
@@ -105,7 +114,7 @@ const UserManagement = () => {
         toast.error(data.message || "Failed to delete");
       }
     } catch (err) {
-      toast.error("Error deleting user",err);
+      toast.error("Error deleting user.",err);
     } finally {
       setShowModal(false);
     }
@@ -131,13 +140,17 @@ const UserManagement = () => {
       <div className="mb-3">
         <input
           id="userPassword"
-          type="number"
+          type="text"
           className={`form-control ${errors.userPassword ? "is-invalid" : ""}`}
           placeholder="Password"
           value={formData.userPassword}
           onChange={handleInputChange}
         />
         <div className="invalid-feedback">{errors.userPassword}</div>
+      </div>
+
+      <div className="mb-3">
+        <input type="file" accept="image/*" className="form-control" onChange={handleFileChange} />
       </div>
 
       <button className="btn btn-primary" onClick={handleSubmit}>
@@ -148,20 +161,23 @@ const UserManagement = () => {
       <ul className="list-group mt-3">
         {users.map((user) => (
           <li key={user._id} className="list-group-item d-flex justify-content-between align-items-center">
-            <span>
-              {user.userName} (Password: {user.userPassword})
-            </span>
             <div>
-              <button
-                className="btn btn-sm btn-info me-2"
-                onClick={() => handleEdit(user)}
-              >
+              <strong>{user.userName}</strong> (Password: {user.userPassword})
+              {user.userImage && (
+                <div>
+                  <img
+                    src={`${apiBase}/${user.userImage}`}
+                    alt="User"
+                    style={{ width: "50px", height: "50px", objectFit: "cover", marginLeft: "10px" }}
+                  />
+                </div>
+              )}
+            </div>
+            <div>
+              <button className="btn btn-sm btn-info me-2" onClick={() => handleEdit(user)}>
                 Edit
               </button>
-              <button
-                className="btn btn-sm btn-danger"
-                onClick={() => confirmDelete(user._id)}
-              >
+              <button className="btn btn-sm btn-danger" onClick={() => confirmDelete(user._id)}>
                 Delete
               </button>
             </div>
@@ -169,9 +185,8 @@ const UserManagement = () => {
         ))}
       </ul>
 
-      {/* Delete Confirmation Modal */}
       {showModal && (
-        <div className="modal show fade d-block" tabIndex="-1" role="dialog" style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
+        <div className="modal show fade d-block" tabIndex="-1" style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
           <div className="modal-dialog" role="document">
             <div className="modal-content">
               <div className="modal-header">
