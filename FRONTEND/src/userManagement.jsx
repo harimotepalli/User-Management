@@ -3,7 +3,7 @@ import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
 const UserManagement = () => {
-  const apiBase = import.meta.env.VITE_API_URL || "http://localhost:7000";
+  const apiBase = import.meta.env.VITE_API_URL;
 
   const [users, setUsers] = useState([]);
   const [formData, setFormData] = useState({
