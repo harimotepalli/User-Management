@@ -2,6 +2,9 @@ const express = require("express");
 const router = express.Router();
 const userController = require("../controllers/userController");
 
+//node mailer controller import
+const mailController = require("../controllers/mailController");
+
 // for img uploading
 const multer = require("multer");
 const fs= require("fs");
@@ -40,4 +43,6 @@ router.put("/update-user/:id", userController.UpdateUser);
 // Delete
 router.delete("/delete-user/:id", userController.DeleteUser);
 
+// Send mail
+router.post("/send-mail", mailController.sendMail);
 module.exports = router;
