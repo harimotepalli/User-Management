@@ -45,4 +45,8 @@ router.delete("/delete-user/:id", userController.DeleteUser);
 
 // Send mail
 router.post("/send-mail", mailController.sendMail);
+
+//login 
+router.post("/login", userController.LoginUser);
+
 module.exports = router;
