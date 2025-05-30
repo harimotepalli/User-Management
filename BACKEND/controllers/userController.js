@@ -8,7 +8,8 @@ const AddUser = async (req, res) => {
     try {
         const imagePath = req.file ? req.file.path : null; // Get the image path from the request
 
-        // converting password to hashcode
+        // converting password into hashcode 
+
 
         const hashPassword =await bcrypt.hash(userPassword,10);
 
