@@ -3,6 +3,8 @@ import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
 const UserManagement = () => {
+
+  //API URL
   const apiBase = import.meta.env.VITE_API_URL;
 
   const [users, setUsers] = useState([]);
