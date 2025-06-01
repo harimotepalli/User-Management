@@ -13,6 +13,7 @@ const UserManagement = () => {
     userName: "",
     userPassword: "",
     userImage: null,
+    
   });
   const [errors, setErrors] = useState({});
   const [showModal, setShowModal] = useState(false);
