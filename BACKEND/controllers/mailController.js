@@ -1,34 +1,39 @@
-const nodemailer = require('nodemailer');
- 
+const nodemailer = require("nodemailer");
+const validator = require("validator");
+
 const sendMail = (req, res) => {
- 
+    const { to, subject, html } = req.body;
+
+    if (!to || !subject || !html) {
+        return res.status(400).json({ message: "Missing required fields: to, subject, html" });
+    }
+
+    if (!validator.isEmail(to)) {
+        return res.status(400).json({ message: "Invalid email address" });
+    }
+
     const mailTransporter = nodemailer.createTransport({
         service: "gmail",
-        auth:{
-            user: 'durgahari012@gmail.com',
-            pass: "ijiy sxzv uvvt ynzc"
-        }
+        auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS,
+        },
     });
- 
+
     const mailOptions = {
-        from: "durgahari012@gmail.com",
-        to: "durgaharimotepalli@gmail.com",
-        subject: "Testing",
-        // text: "Hello this is sender......!"
-        html: `
-            <div>
-                <h1>Hello this mail is from nodemailer</h1>
-            </div>
-        `
+        from: process.env.EMAIL_USER,
+        to,
+        subject,
+        html,
     };
- 
+
     mailTransporter.sendMail(mailOptions, (error, info) => {
-        if(error){
-            res.status(500).send({error: error});
-        };
-        res.status(200).send({message: "mail sent succesfully..."});
+        if (error) {
+            console.error("Error sending email:", error);
+            return res.status(500).json({ message: "Error sending email", error: error.message });
+        }
+        res.status(200).json({ message: "Mail sent successfully", info });
     });
- 
 };
- 
-exports.sendMail = sendMail;
+
+module.exports = { sendMail };

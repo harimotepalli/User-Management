@@ -1,52 +1,59 @@
 const express = require("express");
 const router = express.Router();
 const userController = require("../controllers/userController");
-
-//node mailer controller import
 const mailController = require("../controllers/mailController");
-
-// for img uploading
 const multer = require("multer");
-const fs= require("fs");
+const fs = require("fs");
 const path = require("path");
 
-
-// defining path for image upload
-const imagePath = path.join(__dirname, '..','public','userImages');
-if(!fs.existsSync(imagePath)){
-    fs.mkdirSync(imagePath, { recursive: true });
+const imagePath = path.join(__dirname, "..", "public", "userImages");
+if (!fs.existsSync(imagePath)) {
+    try {
+        fs.mkdirSync(imagePath, { recursive: true });
+        console.log("Created directory:", imagePath);
+    } catch (err) {
+        console.error("Failed to create directory:", err);
+    }
 }
 
-// multer configuration
-
 const storage = multer.diskStorage({
-    destination: function(req, file, cb){
+    destination: function (req, file, cb) {
+        console.log(`Saving file to: ${imagePath}`);
         cb(null, imagePath);
     },
-    filename: function(req, file, cb){
-        cb(null, file.originalname);
-    }
+    filename: function (req, file, cb) {
+        const filename = `${Date.now()}-${file.originalname}`;
+        console.log(`Generated filename: ${filename}`);
+        cb(null, filename);
+    },
 });
 
-const uploadImage = multer({ storage: storage }).single("userImage");
+const uploadImage = multer({
+    storage: storage,
+    fileFilter: (req, file, cb) => {
+        const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
+        if (!allowedTypes.includes(file.mimetype)) {
+            return cb(new Error("Only JPEG, PNG, and GIF files are allowed"));
+        }
+        cb(null, true);
+    },
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+}).single("userImage");
 
+const multerErrorHandler = (err, req, res, next) => {
+    if (err instanceof multer.MulterError) {
+        return res.status(400).json({ message: `Multer error: ${err.message}` });
+    } else if (err) {
+        return res.status(400).json({ message: err.message });
+    }
+    next();
+};
 
-// Create
-router.post("/add-user", uploadImage , userController.AddUser);
-
-// Read
+router.post("/add-user", uploadImage, multerErrorHandler, userController.AddUser);
 router.get("/get-users", userController.GetUsers);
-
-// Update
-router.put("/update-user/:id", userController.UpdateUser);
-
-// Delete
+router.put("/update-user/:id", uploadImage, multerErrorHandler, userController.UpdateUser);
 router.delete("/delete-user/:id", userController.DeleteUser);
-
-// Send mail
 router.post("/send-mail", mailController.sendMail);
-
-//login 
 router.post("/login", userController.LoginUser);
 
 module.exports = router;
