@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
+//User Management
 const UserManagement = () => {
   const apiBase = import.meta.env.VITE_API_URL;
 
@@ -13,10 +14,13 @@ const UserManagement = () => {
     userPassword: "",
     userImage: null,
   });
+
+
   const [errors, setErrors] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [deleteUserId, setDeleteUserId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+
 
   useEffect(() => {
     fetchUsers();
