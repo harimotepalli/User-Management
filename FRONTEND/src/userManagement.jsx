@@ -2,17 +2,19 @@ import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
-//User Management
+//User Management 
 const UserManagement = () => {
   const apiBase = import.meta.env.VITE_API_URL;
 
   const [users, setUsers] = useState([]);
   const [formData, setFormData] = useState({
+
     userId: "",
     userName: "",
     userEmail: "",
     userPassword: "",
     userImage: null,
+
   });
 
 
@@ -41,6 +43,7 @@ const UserManagement = () => {
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
+    
     setFormData((prev) => ({ ...prev, [id]: value }));
     setErrors((prev) => ({ ...prev, [id]: "" }));
   };
