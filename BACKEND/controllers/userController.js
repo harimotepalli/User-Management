@@ -61,30 +61,6 @@ const UpdateUser = async (req, res) => {
         res.status(500).json({ message: "Error updating user", error: error.message });
     }
 };
-
-// const UpdateUser = async (req, res) => {
-//     const { id } = req.params;
-//     const { userName, userEmail, userPassword } = req.body;
-//     try {
-//         const updateData = { userName, userName };
-//         if (userPassword) {
-//             updateData.userEmail = userEmail;
-//         }
-//         if (req.file) {
-//             updateData.userImage = req.file; // Use filename directly
-//             console.log(`Updating user ${id} with new image: ${updateData.userImage}`));
-//         }
-//         const updatedUsers = await userData.findByIdAndUpdate(id, updateData, { new: true, });
-//         if (!updatedUsers) {
-//             return res.status(404).json({ message: "User not found" });
-//         }
-//         res.status(200).json({ message: "User data updated successfully", data: updatedUsers });
-//     } catch (error) {
-//         console.error(`Error updating user ${id}:`, error);
-//         res.status(500).json({ message: "Error updating user", error: error.message });
-//     }
-// };
-
 const DeleteUser = async (req, res) => {
     const { id } = req.params;
     try {
