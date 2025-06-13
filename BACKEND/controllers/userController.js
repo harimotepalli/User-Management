@@ -38,7 +38,7 @@ const GetUsers = async (req, res) => {
         res.status(500).json({ message: "Error fetching users", error: error.message });
     }
 };
-
+// delete user function 
 const UpdateUser = async (req, res) => {
     const { id } = req.params;
     const { userName, userEmail, userPassword } = req.body;
